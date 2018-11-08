@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "190696593353",
+    "firebase_url": "https://cursodiplomado-9354d.firebaseio.com",
+    "project_id": "cursodiplomado-9354d",
+    "storage_bucket": "cursodiplomado-9354d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190696593353:android:d2543f66c475674c",
+        "android_client_info": {
+          "package_name": "com.ucab.leonardo.cursodiplomado"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190696593353-8puaqb07vjqmtl2kc8ep9isf66po8jq8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ucab.leonardo.cursodiplomado",
+            "certificate_hash": "2f5b4e3c3f65d6367619ed31696539413698b865"
+          }
+        },
+        {
+          "client_id": "190696593353-qvb7agn1hi8kc12tqdj5h81u3brtcl8p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6o_933dOZrlsekFDE907_Z_ZoNtJEwQU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190696593353-qvb7agn1hi8kc12tqdj5h81u3brtcl8p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
