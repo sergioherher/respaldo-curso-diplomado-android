@@ -3,6 +3,7 @@ package com.ucab.leonardo.cursodiplomado;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -47,14 +48,29 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        usuarios.add(new Usuario("usuario1", "Guedez", "21", "leo@gmail.com"));
-        usuarios.add(new Usuario("Leonardo", "Guedez", "21", "leo@gmail.com"));
-        usuarios.add(new Usuario("Leonardo", "Guedez", "21", "leo@gmail.com"));
-        usuarios.add(new Usuario("Leonardo", "Guedez", "21", "leo@gmail.com"));
-        usuarios.add(new Usuario("Leonardo", "Guedez", "21", "leo@gmail.com"));
-        usuarios.add(new Usuario("Leonardo", "Guedez", "21", "leo@gmail.com"));
-        usuarios.add(new Usuario("Leonardo", "Guedez", "21", "leo@gmail.com"));
-        usuarios.add(new Usuario("Leonardo", "Guedez", "21", "leo@gmail.com"));
+        usuarios.add(new Usuario("Leonardo", "Guedez", "CVG Venalum",
+                "Urb. Las Garzas, manzana 23, casa 9","21", "leo@gmail.com", R.drawable.ic1));
+
+        usuarios.add(new Usuario("Pedro", "Perez", "CVG Bauxilum",
+                "Residencia Los Saltos, casa 14","21", "pedroperez@gmail.com", R.drawable.ic2));
+
+        usuarios.add(new Usuario("Jesus", "Rodriguez", "CVG Alcasa",
+                "Urb. Loma Linda, Manzana 14, calle 16, casa 4","21", "jesus.rodriguez@gmail.com", R.drawable.ic3));
+
+        usuarios.add(new Usuario("Carlos", "Gonzalez", "SIDOR",
+                "Urb. Loma Linda, Manzana 14, calle 16, casa 4","21", "carlosg@gmail.com", R.drawable.ic4));
+
+        usuarios.add(new Usuario("Luis", "Perez", "Momentum Lab",
+                "Urb. Villa Africana, calle 14, casa 2","21", "perezluis@gmail.com", R.drawable.ic5));
+
+        usuarios.add(new Usuario("Maria", "Villalba", "CVG Venalum",
+                "Urb. Las Garzas","21", "villalbamaria@gmail.com", R.drawable.ic6));
+
+        usuarios.add(new Usuario("Jose", "Rodriguez", "Empresas Polar",
+                "Urb. Las Garzas","21", "jrodriguez@gmail.com", R.drawable.ic7));
+
+        usuarios.add(new Usuario("Manuel", "Perez","SIDOR",
+                "Urb. Las Garzas", "21", "mperez@gmail.com", R.drawable.ic8));
         adapter = new UsuarioAdapter(this, usuarios);
 
         recyclerView = findViewById(R.id.recyvler_view);
@@ -63,13 +79,15 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
+//        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Agregar nuevo usuario", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, CrearUsuarioActivity.class);
+                startActivity(intent);
             }
         });
 

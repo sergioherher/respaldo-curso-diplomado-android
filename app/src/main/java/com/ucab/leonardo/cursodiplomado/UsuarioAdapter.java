@@ -1,12 +1,18 @@
 package com.ucab.leonardo.cursodiplomado;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -23,15 +29,19 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
     }
 
     class UsuarioViewHolder extends RecyclerView.ViewHolder {
+        private ImageView ivPerfil;
         private TextView tvNombres;
-        private TextView tvEmail;
-        private TextView tvEdad;
+        private TextView tvEmpresa;
+        private ImageView ivEditar;
+        private ConstraintLayout clFilaUsuario;
 
         UsuarioViewHolder(View itemView) {
             super(itemView);
+            ivPerfil = itemView.findViewById(R.id.iv_perfil);
             tvNombres = itemView.findViewById(R.id.tv_nombres);
-            tvEmail = itemView.findViewById(R.id.tv_email);
-            tvEdad = itemView.findViewById(R.id.tv_edad);
+            tvEmpresa = itemView.findViewById(R.id.tv_empresa);
+            ivEditar = itemView.findViewById(R.id.iv_editar);
+            clFilaUsuario = itemView.findViewById(R.id.constraint_layout_fila_usuario);
         }
     }
 
@@ -45,11 +55,38 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UsuarioViewHolder holder, int position) {
-        Usuario usuario = usuarios.get(holder.getAdapterPosition());
-        holder.tvNombres.setText(usuario.getNombre() + " " + usuario.getApellido());
-        holder.tvEmail.setText(usuario.getEmail());
-        holder.tvEdad.setText(usuario.getEdad());
+    public void onBindViewHolder(@NonNull final UsuarioViewHolder holder, int position) {
+        final Usuario usuario = usuarios.get(holder.getAdapterPosition());
+        holder.tvNombres.setText(String.format("%s %s", usuario.getNombre(), usuario.getApellido()));
+        holder.tvEmpresa.setText(usuario.getEmpresa());
+
+
+
+
+        Glide.with(context)
+                .load(usuario.getImagen())
+                .apply(RequestOptions.circleCropTransform())
+                .apply(RequestOptions.overrideOf(200, 200))
+                .into(holder.ivPerfil);
+
+
+        holder.clFilaUsuario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetallesUsuarioActivity.class);
+                prepararIntent(intent, usuario);
+                context.startActivity(intent);
+            }
+        });
+
+        holder.ivEditar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, EditarUsuarioActivity.class);
+                prepararIntent(intent, usuario);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -57,5 +94,14 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
         return usuarios.size();
     }
 
+    private void prepararIntent(Intent intent, Usuario usuario) {
+        intent.putExtra("nombre", usuario.getNombre());
+        intent.putExtra("apellido", usuario.getApellido());
+        intent.putExtra("empresa", usuario.getEmpresa());
+        intent.putExtra("direccion", usuario.getDireccion());
+        intent.putExtra("edad", usuario.getEdad());
+        intent.putExtra("email", usuario.getEmail());
+        intent.putExtra("imagen", usuario.getImagen());
+    }
 
 }

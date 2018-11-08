@@ -12,6 +12,14 @@ public class Usuario {
     @Expose
     private String apellido;
 
+    @SerializedName("empresa")
+    @Expose
+    private String empresa;
+
+    @SerializedName("direccion")
+    @Expose
+    private String direccion;
+
     @SerializedName("edad")
     @Expose
     private String edad;
@@ -20,11 +28,17 @@ public class Usuario {
     @Expose
     private String email;
 
-    public Usuario(String nombre, String apellido, String edad, String email) {
+    private int imagen;
+
+    public Usuario(String nombre, String apellido, String empresa, String direccion, String edad,
+                   String email, int imagen) {
         this.nombre = nombre;
         this.apellido = apellido;
+        this.empresa = empresa;
+        this.direccion = direccion;
         this.edad = edad;
         this.email = email;
+        this.imagen = imagen;
     }
 
     public String getNombre() {
@@ -43,6 +57,22 @@ public class Usuario {
         this.apellido = apellido;
     }
 
+    public String getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
     public String getEdad() {
         return edad;
     }
@@ -57,5 +87,13 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(int imagen) {
+        this.imagen = imagen;
     }
 }
