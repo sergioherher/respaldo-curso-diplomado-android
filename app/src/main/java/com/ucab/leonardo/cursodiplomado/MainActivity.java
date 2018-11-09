@@ -3,7 +3,10 @@ package com.ucab.leonardo.cursodiplomado;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -31,15 +35,23 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = MainActivity.class.getSimpleName();
 
     public RecyclerView recyclerView;
-    private static ArrayList<Usuario> usuarios = new ArrayList<>();
+    private List<Usuario> usuarios = new ArrayList<>();
 
     public UsuarioAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    public BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        usuarios.add(new Usuario("Leonardo", "Guedez", "CVG Venalum",
+        /*usuarios.add(new Usuario("Leonardo", "Guedez", "CVG Venalum",
                 "Urb. Las Garzas, manzana 23, casa 9","21", "leo@gmail.com", R.drawable.ic1));
 
         usuarios.add(new Usuario("Pedro", "Perez", "CVG Bauxilum",
@@ -70,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 "Urb. Las Garzas","21", "jrodriguez@gmail.com", R.drawable.ic7));
 
         usuarios.add(new Usuario("Manuel", "Perez","SIDOR",
-                "Urb. Las Garzas", "21", "mperez@gmail.com", R.drawable.ic8));
+                "Urb. Las Garzas", "21", "mperez@gmail.com", R.drawable.ic8));*/
         adapter = new UsuarioAdapter(this, usuarios);
 
         recyclerView = findViewById(R.id.recyvler_view);
@@ -79,7 +91,57 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.250.7:3000")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        final int imagenes[] = {
+                R.drawable.ic1,
+                R.drawable.ic2,
+                R.drawable.ic3,
+                R.drawable.ic4,
+                R.drawable.ic5,
+                R.drawable.ic6,
+                R.drawable.ic7,
+                R.drawable.ic8,
+        };
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<RespuestaObtenerUsuarios> call = apiService.obtenerUsuarios();
+        call.enqueue(new Callback<RespuestaObtenerUsuarios>() {
+            @Override
+            public void onResponse(Call<RespuestaObtenerUsuarios> call, Response<RespuestaObtenerUsuarios> response) {
+                Log.w(TAG, "RESPUESTA: " + response.code());
+
+                if (response.isSuccessful()) {
+                    Log.w(TAG, "Respuesta exitosa");
+                    if (response.body() != null) {
+                        List<Usuario> usuariosRespuesta = response.body().getUsuarios();
+
+                        for (int i = 0; i < usuariosRespuesta.size(); i++) {
+                            Usuario u = usuariosRespuesta.get(i);
+                            String nombre = u.getNombre();
+                            String apellido = u.getApellido();
+                            String empresa = u.getEmpresa();
+                            String direccion = u.getDireccion();
+                            String edad = u.getEdad();
+                            String email = u.getEmail();
+
+                            Usuario nuevoUsuario = new Usuario(nombre, apellido, empresa,
+                                    direccion, edad, email, imagenes[i % 8]);
+                            usuarios.add(nuevoUsuario);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespuestaObtenerUsuarios> call, Throwable t) {
+
+            }
+        });
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -112,8 +174,22 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel channel = new NotificationChannel("micanal123", "canal3", NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription("Un buen canal");
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(MyFirebaseMessagingService.RESULT));
+    }
+
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 
     @Override
@@ -136,14 +212,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public static void actualizarUsuario(Usuario usuario) {
-        for (int i = 0; i < usuarios.size(); i++) {
-            if (usuarios.get(i).getNombre().equalsIgnoreCase(usuario.getNombre())) {
-                usuarios.set(i, usuario);
-                return;
-            }
-        }
     }
 }
