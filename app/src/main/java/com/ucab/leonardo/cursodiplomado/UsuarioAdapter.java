@@ -13,17 +13,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.ucab.leonardo.cursodiplomado.actividades.DetallesUsuarioActivity;
+import com.ucab.leonardo.cursodiplomado.actividades.EditarUsuarioActivity;
+import com.ucab.leonardo.cursodiplomado.modelos.Usuario;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioViewHolder> {
 
     private final String TAG = UsuarioAdapter.class.getSimpleName();
 
     private Context context;
-    private List<Usuario> usuarios;
+    private ArrayList<Usuario> usuarios;
 
-    public UsuarioAdapter(Context context, List<Usuario> usuarios) {
+    public UsuarioAdapter(Context context, ArrayList<Usuario> usuarios) {
         this.context = context;
         this.usuarios = usuarios;
     }
@@ -59,9 +62,6 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
         final Usuario usuario = usuarios.get(holder.getAdapterPosition());
         holder.tvNombres.setText(String.format("%s %s", usuario.getNombre(), usuario.getApellido()));
         holder.tvEmpresa.setText(usuario.getEmpresa());
-
-
-
 
         Glide.with(context)
                 .load(usuario.getImagen())

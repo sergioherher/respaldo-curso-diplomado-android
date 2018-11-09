@@ -1,4 +1,4 @@
-package com.ucab.leonardo.cursodiplomado;
+package com.ucab.leonardo.cursodiplomado.actividades;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.ucab.leonardo.cursodiplomado.R;
 
 public class DetallesUsuarioActivity extends AppCompatActivity {
 
@@ -17,7 +18,6 @@ public class DetallesUsuarioActivity extends AppCompatActivity {
     private TextView tvDireccion;
     private TextView tvEdad;
     private TextView tvEmail;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

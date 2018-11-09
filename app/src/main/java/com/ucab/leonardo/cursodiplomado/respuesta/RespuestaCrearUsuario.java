@@ -1,9 +1,9 @@
-package com.ucab.leonardo.cursodiplomado;
+package com.ucab.leonardo.cursodiplomado.respuesta;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class RespuestCrearUsuario {
+public class RespuestaCrearUsuario {
     @SerializedName("mensaje")
     @Expose
     private String mensaje;

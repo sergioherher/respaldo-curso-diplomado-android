@@ -1,44 +1,20 @@
-package com.ucab.leonardo.cursodiplomado;
+package com.ucab.leonardo.cursodiplomado.peticiones;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class Usuario {
-    @SerializedName("nombre")
-    @Expose
+public class PeticionActualizarUsuario {
     private String nombre;
-
-    @SerializedName("apellido")
-    @Expose
     private String apellido;
-
-    @SerializedName("empresa")
-    @Expose
     private String empresa;
-
-    @SerializedName("direccion")
-    @Expose
     private String direccion;
-
-    @SerializedName("edad")
-    @Expose
     private String edad;
-
-    @SerializedName("email")
-    @Expose
     private String email;
 
-    private int imagen;
-
-    public Usuario(String nombre, String apellido, String empresa, String direccion, String edad,
-                   String email, int imagen) {
+    public PeticionActualizarUsuario(String nombre, String apellido, String empresa, String direccion, String edad, String email) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.empresa = empresa;
         this.direccion = direccion;
         this.edad = edad;
         this.email = email;
-        this.imagen = imagen;
     }
 
     public String getNombre() {
@@ -87,13 +63,5 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public int getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(int imagen) {
-        this.imagen = imagen;
     }
 }

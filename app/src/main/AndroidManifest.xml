@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.ucab.leonardo.cursodiplomado">
 
     <application
@@ -8,9 +9,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".MainActivity"
+            android:name=".actividades.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -20,15 +22,11 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <activity android:name=".EditarUsuarioActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".CrearUsuarioActivity" android:parentActivityName=".MainActivity" />
-        <activity android:name=".DetallesUsuarioActivity" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".actividades.EditarUsuarioActivity" android:parentActivityName=".actividades.MainActivity" />
+        <activity android:name=".actividades.CrearUsuarioActivity" android:parentActivityName=".actividades.MainActivity" />
+        <activity
+            android:name=".actividades.DetallesUsuarioActivity"
+            android:parentActivityName=".actividades.MainActivity" />
     </application>
 
 </manifest>
