@@ -2,8 +2,8 @@ package com.ucab.leonardo.cursodiplomado.api;
 
 import com.ucab.leonardo.cursodiplomado.peticiones.PeticionActualizarUsuario;
 import com.ucab.leonardo.cursodiplomado.peticiones.PeticionCrearUsuario;
-import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaCrearUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaActualizarUsuario;
+import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaCrearUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
 
 import retrofit2.Call;

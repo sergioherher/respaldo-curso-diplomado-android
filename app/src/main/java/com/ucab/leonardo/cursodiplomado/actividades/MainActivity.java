@@ -3,23 +3,27 @@ package com.ucab.leonardo.cursodiplomado.actividades;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ucab.leonardo.cursodiplomado.R;
-import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
 import com.ucab.leonardo.cursodiplomado.UsuarioAdapter;
 import com.ucab.leonardo.cursodiplomado.api.ApiService;
 import com.ucab.leonardo.cursodiplomado.api.ClienteRetrofit;
 import com.ucab.leonardo.cursodiplomado.modelos.Usuario;
+import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     // Lista donde se guardaran los usuarios
     private ArrayList<Usuario> usuarios = new ArrayList<>();
+
+    private TextView tvResultadoFiltroVacio;
 
     public UsuarioAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -69,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        tvResultadoFiltroVacio = findViewById(R.id.tv_resultado_filtro_vacio);
+
         // Obtiene el cliente de retrofit
         retrofit = ClienteRetrofit.obtenerClienteRetrofit();
         refrescarUsuarios();
@@ -85,19 +93,59 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        // Obtiene el elemento del menu referente a la accion de buscar
+        final MenuItem item = menu.findItem(R.id.action_search);
+
+        // Obtiene el view de la barra de busqueda
+        SearchView searchView = (SearchView) item.getActionView();
+
+        // Establece el texto que funciona como pista en la barra
+        searchView.setQueryHint(getResources().getString(R.string.action_search));
+
+        // Establece el listener para las acciones de la barra de busqueda
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            // Escucha cuando el usuario presiona el boton de buscar
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            // Escucha a medida que el usuario escribe texto en la barra
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filtrar(newText);
+
+                // Si no hubo resultados, muestra el TextView que lo indica
+                if (adapter.getItemCount() == 0) {
+                    recyclerView.setVisibility(View.GONE);
+                    tvResultadoFiltroVacio.setVisibility(View.VISIBLE);
+                } else if (recyclerView.getVisibility() == View.GONE) {
+                    // Si el RecyclerView estaba oculto, lo hacemos visible otra vez
+                    recyclerView.setVisibility(View.VISIBLE);
+                    tvResultadoFiltroVacio.setVisibility(View.GONE);
+                }
+                return true;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // Actualiza
-        if (id == R.id.action_refrescar) {
-            refrescarUsuarios();
-            return true;
+        // Manejamos los clicks que se hagan a los botones del menu, dependiendo de cual sea
+        switch (id) {
+            case R.id.action_refrescar:
+                refrescarUsuarios();
+                return true;
+            case R.id.action_search:
+                TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.toolbar));
+                item.expandActionView();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -106,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
     // Hace la peticion al servidor para obtener todos los usuarios
     private void refrescarUsuarios() {
         ApiService apiService = retrofit.create(ApiService.class);
+
         Call<RespuestaObtenerUsuarios> call = apiService.obtenerUsuarios();
         call.enqueue(new Callback<RespuestaObtenerUsuarios>() {
             @Override
@@ -130,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                                     direccion, edad, email, imagenes[i % 8]);
                             usuarios.add(nuevoUsuario);
                         }
+                        adapter.setCopiaUsuarios(usuarios);
                         adapter.notifyDataSetChanged();
                     }
                 }

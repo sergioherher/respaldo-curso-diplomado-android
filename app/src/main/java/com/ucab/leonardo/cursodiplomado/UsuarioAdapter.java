@@ -24,7 +24,11 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
     private final String TAG = UsuarioAdapter.class.getSimpleName();
 
     private Context context;
+    // Lista principal de usuarios
     private ArrayList<Usuario> usuarios;
+
+    // Lista de respaldo para la barra de busqueda
+    private ArrayList<Usuario> copiaUsuarios;
 
     public UsuarioAdapter(Context context, ArrayList<Usuario> usuarios) {
         this.context = context;
@@ -93,6 +97,34 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
     public int getItemCount() {
         return usuarios.size();
     }
+
+    // Crea la lista de respaldo de usuarios. Llamar justo despues de, por ejemplo, refrescarUsuarios()
+    public void setCopiaUsuarios(ArrayList<Usuario> usuarios) {
+        copiaUsuarios = new ArrayList<>(usuarios);
+    }
+
+    public void filtrar(String consulta) {
+        // Al principio de la busqueda, no hemos encontrado ningun usuario
+        usuarios.clear();
+
+        // Si la consulta esta vacia, devolvemos todos los usuarios
+        if (consulta.isEmpty())  {
+            usuarios.addAll(copiaUsuarios);
+            return;
+        }
+
+        // Normaliza el texto de busqueda, convirtiendolo a minuscula
+        consulta = consulta.toLowerCase();
+        for (Usuario usuario : copiaUsuarios) {
+            if (usuario.getNombre().toLowerCase().contains(consulta) ||
+                    usuario.getApellido().toLowerCase().contains(consulta) ||
+                    usuario.getEmpresa().toLowerCase().contains(consulta)) {
+                usuarios.add(usuario);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 
     private void prepararIntent(Intent intent, Usuario usuario) {
         intent.putExtra("nombre", usuario.getNombre());
