@@ -2,24 +2,28 @@ package com.ucab.leonardo.cursodiplomado.actividades;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.ucab.leonardo.cursodiplomado.R;
-import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
+import com.ucab.leonardo.cursodiplomado.RecyclerItemTouchHelper;
 import com.ucab.leonardo.cursodiplomado.UsuarioAdapter;
 import com.ucab.leonardo.cursodiplomado.api.ApiService;
 import com.ucab.leonardo.cursodiplomado.api.ClienteRetrofit;
 import com.ucab.leonardo.cursodiplomado.modelos.Usuario;
+import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +33,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     private final String TAG = MainActivity.class.getSimpleName();
+
+    private CoordinatorLayout coordinatorLayout;
 
     public RecyclerView recyclerView;
 
@@ -61,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
+
         adapter = new UsuarioAdapter(this, usuarios);
         recyclerView = findViewById(R.id.recyvler_view);
         recyclerView.setAdapter(adapter);
@@ -68,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
 
         // Obtiene el cliente de retrofit
         retrofit = ClienteRetrofit.obtenerClienteRetrofit();
@@ -141,5 +153,51 @@ public class MainActivity extends AppCompatActivity {
                         "Error de conexion en la red", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    // Metodo que se llama cuando se elimina una entrada de la lista con el gesto swipe
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        // Guardamos la posicion de la orden que se va a borrar, por si se quiere "deshacer"
+        final int deletedUserPosition = viewHolder.getAdapterPosition();
+        Log.e(TAG, "-----ANTES-----");
+        Log.w(TAG, "deletedUserPosition " + deletedUserPosition);
+        Log.w(TAG, "adapter.getItemCount() " + adapter.getItemCount());
+
+        // Obtiene el nombre del usuaro que se va a borrar
+        final Usuario usuario = usuarios.get(deletedUserPosition);
+        String nombre = usuario.getNombre();
+
+        adapter.removeItem(deletedUserPosition);
+        Log.e(TAG, "-----DESPUES-----");
+        Log.w(TAG, "adapter.getItemCount() " + adapter.getItemCount());
+
+        Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                nombre + " eliminado", 5000);
+        snackbar.setAction("Deshacer", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.restoreItem(usuario, deletedUserPosition);
+                Log.w(TAG, "Restaura, adapter.getItemCount() " + adapter.getItemCount());
+
+                // Si era el primero o el ultimo de la lista, hace scroll hacia esa posicion
+                if (eraElPrimero(deletedUserPosition) || eraElUltimo(deletedUserPosition)) {
+                    layoutManager.scrollToPosition(deletedUserPosition);
+                }
+            }
+        });
+        snackbar.show();
+    }
+
+    // Indica si el usuario eliminado era el primero de la lista. Retorna true si es asi, false sino
+    private boolean eraElPrimero(int position) {
+        return position == 0;
+    }
+
+    // Indica si el usuario eliminado era el ultimo de la lista. Retorna true si es asi, false sino
+    private boolean eraElUltimo(int positon) {
+        // Restamos uno porque para el momento en que se llama a este metodo, ya el elemento fue
+        // restaurado, por lo que volvemos a tener la misma cantidad de elementos de antes de borrar
+        return positon == adapter.getItemCount()-1;
     }
 }

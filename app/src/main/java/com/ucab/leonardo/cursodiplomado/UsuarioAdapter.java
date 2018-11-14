@@ -31,21 +31,9 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
         this.usuarios = usuarios;
     }
 
-    class UsuarioViewHolder extends RecyclerView.ViewHolder {
-        private ImageView ivPerfil;
-        private TextView tvNombres;
-        private TextView tvEmpresa;
-        private ImageView ivEditar;
-        private ConstraintLayout clFilaUsuario;
-
-        UsuarioViewHolder(View itemView) {
-            super(itemView);
-            ivPerfil = itemView.findViewById(R.id.iv_perfil);
-            tvNombres = itemView.findViewById(R.id.tv_nombres);
-            tvEmpresa = itemView.findViewById(R.id.tv_empresa);
-            ivEditar = itemView.findViewById(R.id.iv_editar);
-            clFilaUsuario = itemView.findViewById(R.id.constraint_layout_fila_usuario);
-        }
+    public void removeItem(int position) {
+        usuarios.remove(position);
+        notifyItemRemoved(position);
     }
 
     @NonNull
@@ -92,6 +80,28 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.UsuarioV
     @Override
     public int getItemCount() {
         return usuarios.size();
+    }
+
+    public void restoreItem(Usuario usuario, int position) {
+        usuarios.add(position, usuario);
+        notifyItemInserted(position);
+    }
+
+    class UsuarioViewHolder extends RecyclerView.ViewHolder {
+        ConstraintLayout clFilaUsuario;
+        private ImageView ivPerfil;
+        private TextView tvNombres;
+        private TextView tvEmpresa;
+        private ImageView ivEditar;
+
+        UsuarioViewHolder(View itemView) {
+            super(itemView);
+            ivPerfil = itemView.findViewById(R.id.iv_perfil);
+            tvNombres = itemView.findViewById(R.id.tv_nombres);
+            tvEmpresa = itemView.findViewById(R.id.tv_empresa);
+            ivEditar = itemView.findViewById(R.id.iv_editar);
+            clFilaUsuario = itemView.findViewById(R.id.constraint_layout_fila_usuario);
+        }
     }
 
     private void prepararIntent(Intent intent, Usuario usuario) {
