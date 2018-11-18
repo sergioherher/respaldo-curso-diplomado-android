@@ -23,6 +23,8 @@ import com.ucab.leonardo.cursodiplomado.UsuarioAdapter;
 import com.ucab.leonardo.cursodiplomado.api.ApiService;
 import com.ucab.leonardo.cursodiplomado.api.ClienteRetrofit;
 import com.ucab.leonardo.cursodiplomado.modelos.Usuario;
+import com.ucab.leonardo.cursodiplomado.peticiones.PeticionBorrarUsuario;
+import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaBorraUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
 
 import java.util.ArrayList;
@@ -168,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         final Usuario usuario = usuarios.get(deletedUserPosition);
         String nombre = usuario.getNombre();
 
+        // Obtener el email del usuario que se va a borrar
+        final String email = usuario.getEmail();
+
         adapter.removeItem(deletedUserPosition);
         Log.e(TAG, "-----DESPUES-----");
         Log.w(TAG, "adapter.getItemCount() " + adapter.getItemCount());
@@ -186,6 +191,45 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                 }
             }
         });
+
+        snackbar.addCallback(new Snackbar.Callback() {
+
+            @Override
+            public void onDismissed(Snackbar snackbar, int event) {
+                //see Snackbar.Callback docs for event details
+
+                final ApiService apiService = retrofit.create(ApiService.class);
+                //Retrofit retrofit = ClienteRetrofit.obtenerClienteRetrofit();
+                PeticionBorrarUsuario peticion = new PeticionBorrarUsuario(email);
+                Call<RespuestaBorraUsuario> call = apiService.borrarUsuario(email, peticion);
+                call.enqueue(new Callback<RespuestaBorraUsuario>() {
+                    @Override
+                    public void onResponse(Call<RespuestaBorraUsuario> call, Response<RespuestaBorraUsuario> response) {
+                        if (response.isSuccessful()) {
+                            Log.w(TAG, "Usuario creado con exito");
+                        } else {
+                            Toast.makeText(MainActivity.this,
+                                    "La peticion no fue exitosa. Intente nuevamente",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RespuestaBorraUsuario> call, Throwable t) {
+                        Toast.makeText(MainActivity.this,
+                                "Error de conexion en la red. Intente nuevamente",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onShown(Snackbar snackbar) {
+
+            }
+        });
+
+
         snackbar.show();
     }
 
