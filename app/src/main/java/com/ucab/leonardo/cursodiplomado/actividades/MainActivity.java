@@ -23,7 +23,6 @@ import com.ucab.leonardo.cursodiplomado.UsuarioAdapter;
 import com.ucab.leonardo.cursodiplomado.api.ApiService;
 import com.ucab.leonardo.cursodiplomado.api.ClienteRetrofit;
 import com.ucab.leonardo.cursodiplomado.modelos.Usuario;
-import com.ucab.leonardo.cursodiplomado.peticiones.PeticionBorrarUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaBorraUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
 
