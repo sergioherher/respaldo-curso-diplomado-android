@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                     @Override
                     public void onResponse(Call<RespuestaBorraUsuario> call, Response<RespuestaBorraUsuario> response) {
                         if (response.isSuccessful()) {
-                            Log.w(TAG, "Usuario creado con exito");
+                            Log.w(TAG, "Usuario borrado");
                         } else {
                             Toast.makeText(MainActivity.this,
                                     "La peticion no fue exitosa. Intente nuevamente",
