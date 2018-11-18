@@ -5,6 +5,7 @@ import com.ucab.leonardo.cursodiplomado.peticiones.PeticionCrearUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaActualizarUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaCrearUsuario;
 import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaObtenerUsuarios;
+import com.ucab.leonardo.cursodiplomado.respuesta.RespuestaBorraUsuario;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -13,6 +14,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.DELETE;
 
 public interface ApiService {
     @GET("/usuarios")
@@ -27,4 +29,7 @@ public interface ApiService {
     Call<RespuestaActualizarUsuario> actualizarUsuario(@Path("email") String email,
                                                        @Body PeticionActualizarUsuario peticion);
 
+    @Headers("Content-Type: application/json")
+    @DELETE("/usuarios/{email}")
+    Call<RespuestaBorraUsuario> borrarUsuario(@Path("email") String email);
 }
