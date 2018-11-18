@@ -32,6 +32,5 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @DELETE("/usuarios/{email}")
-    Call<RespuestaBorraUsuario> borrarUsuario(@Path("email") String email,
-                                                       @Body PeticionBorrarUsuario peticion);
+    Call<RespuestaBorraUsuario> borrarUsuario(@Path("email") String email);
 }

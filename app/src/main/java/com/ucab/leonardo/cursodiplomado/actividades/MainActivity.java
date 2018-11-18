@@ -200,8 +200,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
                 final ApiService apiService = retrofit.create(ApiService.class);
                 //Retrofit retrofit = ClienteRetrofit.obtenerClienteRetrofit();
-                PeticionBorrarUsuario peticion = new PeticionBorrarUsuario(email);
-                Call<RespuestaBorraUsuario> call = apiService.borrarUsuario(email, peticion);
+
+                Call<RespuestaBorraUsuario> call = apiService.borrarUsuario(email);
                 call.enqueue(new Callback<RespuestaBorraUsuario>() {
                     @Override
                     public void onResponse(Call<RespuestaBorraUsuario> call, Response<RespuestaBorraUsuario> response) {
